@@ -1,0 +1,20 @@
+# =======================
+# JustDetector Configuration
+# =======================
+# Prefix used for all plugin messages.
+# =======================
+prefix: "§x§3§3§A§8§F§F§lᴅ§x§3§C§A§D§F§F§lᴇ§x§4§5§B§2§F§F§lᴛ§x§4§E§B§7§F§F§lᴇ§x§5§7§B§C§F§F§lᴄ§x§6§0§C§1§F§F§lᴛ§x§6§9§C§6§F§F§lᴏ§x§7§2§C§B§F§F§lʀ §8» §f"
+
+# =======================
+# Detection Settings
+# =======================
+# Configure what information to show.
+# =======================
+detection:
+  show-client-type: true
+  show-version: true
+  show-brand: true
+  show-mods: true
+  broadcast-to-ops: true
+  broadcast-to-all: false
+  log-to-console: true

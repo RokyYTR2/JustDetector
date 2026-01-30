@@ -1,0 +1,28 @@
+# =======================
+# JustDetector Messages
+# =======================
+
+# Join messages
+player-joined: "&e%player% &7ʜᴀꜱ ᴊᴏɪɴᴇᴅ ᴛʜᴇ ɢᴀᴍᴇ!"
+client-detected: "&8» &7ᴄʟɪᴇɴᴛ: &e%client_type%"
+version-detected: "&8» &7ᴠᴇʀꜱɪᴏɴ: &e%version%"
+brand-detected: "&8» &7ʙʀᴀɴᴅ: &e%brand%"
+mods-detected-count: "&8» &7ᴍᴏᴅꜱ: &e%count% &7ᴅᴇᴛᴇᴄᴛᴇᴅ"
+
+# Command messages
+commands:
+  no-permission: "&cʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪꜱꜱɪᴏɴ ᴛᴏ ᴜꜱᴇ ᴛʜɪꜱ."
+  player-not-found: "&cᴘʟᴀʏᴇʀ ɴᴏᴛ ꜰᴏᴜɴᴅ ᴏʀ ɴᴏᴛ ᴏɴʟɪɴᴇ!"
+  reload-success: "&aᴄᴏɴꜰɪɢ ʀᴇʟᴏᴀᴅᴇᴅ!"
+  usage-mods: "&cᴜꜱᴀɢᴇ: /detector mods <ᴘʟᴀʏᴇʀ>"
+  unknown-command: "&cᴜɴᴋɴᴏᴡɴ ᴄᴏᴍᴍᴀɴᴅ. ᴜꜱᴇ /detector help"
+
+# Mods list design
+mods-list:
+  header: "&7ᴄʟɪᴇɴᴛ ɪɴꜰᴏ ꜰᴏʀ &e%player%&7:"
+  client-type: "&8» &7ᴄʟɪᴇɴᴛ ᴛʏᴘᴇ: &e%client_type%"
+  brand: "&8» &7ʙʀᴀɴᴅ: &e%brand%"
+  version: "&8» &7ᴠᴇʀꜱɪᴏɴ: &e%version%"
+  mods-count: "&8» &7ᴍᴏᴅꜱ: &a%count% ᴅᴇᴛᴇᴄᴛᴇᴅ"
+  no-mods: "&8» &7ᴍᴏᴅꜱ: &cɴᴏɴᴇ ᴅᴇᴛᴇᴄᴛᴇᴅ"
+  mod-format: "  &8• &e%mod_id% &7(%mod_version%)"

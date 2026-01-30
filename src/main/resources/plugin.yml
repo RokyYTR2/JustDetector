@@ -1,0 +1,25 @@
+name: JustDetector
+version: '0.0.1'
+main: dev.meyba.justDetector.JustDetector
+api-version: '1.21'
+authors: [ Meyba._., Jezevcik20 ]
+description: Just a detector.
+
+commands:
+  detector:
+    description: Manages detector settings
+    usage: /<command> [reload|help|mods <player>]
+
+permissions:
+  justdetector.use:
+    description: Allows use of basic detector commands
+    default: op
+  justdetector.reload:
+    description: Allows reloading the config
+    default: op
+  justdetector.help:
+    description: Allows a player to see the help menu
+    default: true
+  justdetector.view:
+    description: Allows viewing detection messages
+    default: op
