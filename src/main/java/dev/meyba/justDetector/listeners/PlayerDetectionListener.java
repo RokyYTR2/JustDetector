@@ -5,7 +5,6 @@ import dev.meyba.justDetector.managers.PlayerDataManager;
 import dev.meyba.justDetector.utils.ChatUtil;
 import dev.meyba.justDetector.utils.ClientDetector;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
