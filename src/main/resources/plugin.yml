@@ -3,14 +3,23 @@ version: '0.0.1'
 main: dev.meyba.justDetector.JustDetector
 api-version: '1.21'
 authors: [ Meyba._., Jezevcik20 ]
-description: Just a detector.
+description: Just a detector plugin.
 
 commands:
-  detector:
+  justdetector:
     description: Manages detector settings
-    usage: /<command> [reload|help|mods <player>]
+    usage: /<command> [reload|help|check <player>]
+    aliases: [ detector, jd ]
 
 permissions:
+  justdetector.*:
+    description: Gives access to all JustDetector commands
+    default: op
+    children:
+      justdetector.use: true
+      justdetector.reload: true
+      justdetector.help: true
+      justdetector.view: true
   justdetector.use:
     description: Allows use of basic detector commands
     default: op

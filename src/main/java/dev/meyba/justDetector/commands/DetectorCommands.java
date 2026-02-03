@@ -8,11 +8,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-public class DetectorCommands implements CommandExecutor {
+public class DetectorCommands implements CommandExecutor, TabCompleter {
     private final JustDetector plugin;
     private final PlayerDataManager playerDataManager;
     private final ChatUtil chatUtil;
@@ -39,7 +43,6 @@ public class DetectorCommands implements CommandExecutor {
                     return true;
                 }
                 plugin.reloadConfig();
-                chatUtil.reloadMessages();
                 sender.sendMessage(chatUtil.getMessageWithPrefix("commands.reload-success"));
                 return true;
 
@@ -47,14 +50,14 @@ public class DetectorCommands implements CommandExecutor {
                 showHelp(sender);
                 return true;
 
-            case "mods":
+            case "check":
                 if (!sender.hasPermission("justdetector.view")) {
                     sender.sendMessage(chatUtil.getMessageWithPrefix("commands.no-permission"));
                     return true;
                 }
 
                 if (args.length < 2) {
-                    sender.sendMessage(chatUtil.getMessageWithPrefix("commands.usage-mods"));
+                    sender.sendMessage(chatUtil.getMessageWithPrefix("commands.usage-check"));
                     return true;
                 }
 
@@ -76,9 +79,9 @@ public class DetectorCommands implements CommandExecutor {
     private void showHelp(CommandSender sender) {
         String prefix = ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("prefix", ""));
         sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', "&7ʜᴇʟᴘ ᴍᴇɴᴜ:"));
-        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', "&7/detector help - ꜱʜᴏᴡꜱ ᴛʜɪꜱ ʜᴇʟᴘ ᴍᴇɴᴜ"));
-        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', "&7/detector reload - ʀᴇʟᴏᴀᴅꜱ ᴛʜᴇ ᴄᴏɴꜰɪɢ"));
-        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', "&7/detector mods <ᴘʟᴀʏᴇʀ> - ꜱʜᴏᴡꜱ ᴘʟᴀʏᴇʀ'ꜱ ᴍᴏᴅꜱ"));
+        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', "&7/jd help - ꜱʜᴏᴡꜱ ᴛʜɪꜱ ʜᴇʟᴘ ᴍᴇɴᴜ"));
+        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', "&7/jd reload - ʀᴇʟᴏᴀᴅꜱ ᴛʜᴇ ᴄᴏɴꜰɪɢ"));
+        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', "&7/jd check <ᴘʟᴀʏᴇʀ> - ꜱʜᴏᴡꜱ ᴘʟᴀʏᴇʀ'ꜱ ᴍᴏᴅꜱ"));
     }
 
     private void showPlayerMods(CommandSender sender, Player target) {
@@ -107,5 +110,33 @@ public class DetectorCommands implements CommandExecutor {
                         .replace("%mod_version%", mod.getValue()));
             }
         }
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 1) {
+            List<String> completions = new ArrayList<>();
+            if (sender.hasPermission("justdetector.help")) {
+                completions.add("help");
+            }
+            if (sender.hasPermission("justdetector.reload")) {
+                completions.add("reload");
+            }
+            if (sender.hasPermission("justdetector.view")) {
+                completions.add("check");
+            }
+            return completions.stream()
+                    .filter(s -> s.toLowerCase().startsWith(args[0].toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        if (args.length == 2 && args[0].equalsIgnoreCase("check") && sender.hasPermission("justdetector.view")) {
+            return Bukkit.getOnlinePlayers().stream()
+                    .map(Player::getName)
+                    .filter(name -> name.toLowerCase().startsWith(args[1].toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        return new ArrayList<>();
     }
 }

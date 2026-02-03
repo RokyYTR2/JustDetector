@@ -61,19 +61,27 @@ public class PlayerDetectionListener implements Listener {
         boolean broadcastToAll = plugin.getConfig().getBoolean("detection.broadcast-to-all", false);
         boolean logToConsole = plugin.getConfig().getBoolean("detection.log-to-console", true);
 
-        String finalMessage = chatUtil.getMessageWithPrefix("player-joined").replace("%player%", player.getName());
+        if (isBlockedClient(clientType, brand)) {
+            handleBlockedClient(player, clientType, brand, broadcastToOps, broadcastToAll, logToConsole);
+            return;
+        }
+
+        String finalMessage = chatUtil.getMessageWithPrefix("join.player-joined").replace("%player%", player.getName());
         StringBuilder detectionInfo = new StringBuilder();
 
         if (showClientType) {
-            detectionInfo.append("\n").append(chatUtil.getMessageWithPrefix("client-detected").replace("%client_type%", clientType));
+            detectionInfo.append("\n").append(chatUtil.getMessageWithPrefix("detection.client-detected")
+                    .replace("%client_type%", clientType));
         }
 
         if (showVersion) {
-            detectionInfo.append("\n").append(chatUtil.getMessageWithPrefix("version-detected").replace("%version%", version));
+            detectionInfo.append("\n").append(chatUtil.getMessageWithPrefix("detection.version-detected")
+                    .replace("%version%", version));
         }
 
         if (showBrand && brand != null) {
-            detectionInfo.append("\n").append(chatUtil.getMessageWithPrefix("brand-detected").replace("%brand%", brand));
+            detectionInfo.append("\n").append(chatUtil.getMessageWithPrefix("detection.brand-detected")
+                    .replace("%brand%", brand));
         }
 
         String broadcastMessage = finalMessage + detectionInfo.toString();
@@ -106,7 +114,7 @@ public class PlayerDetectionListener implements Listener {
             boolean broadcastToAll = plugin.getConfig().getBoolean("detection.broadcast-to-all", false);
             boolean logToConsole = plugin.getConfig().getBoolean("detection.log-to-console", true);
 
-            String modMessage = chatUtil.getMessageWithPrefix("mods-detected-count")
+            String modMessage = chatUtil.getMessageWithPrefix("detection.mods-detected-count")
                     .replace("%count%", String.valueOf(data.getModCount()));
 
             if (broadcastToAll) {
@@ -122,6 +130,58 @@ public class PlayerDetectionListener implements Listener {
             if (logToConsole) {
                 plugin.getLogger().info("Detected " + data.getModCount() + " mods for player " + player.getName());
             }
+        }
+    }
+
+    private boolean isBlockedClient(String clientType, String brand) {
+        for (String blocked : plugin.getConfig().getStringList("detection.blocked-clients")) {
+            if (blocked == null || blocked.isBlank()) {
+                continue;
+            }
+            String needle = blocked.toLowerCase();
+            if (clientType != null && clientType.toLowerCase().contains(needle)) {
+                return true;
+            }
+            if (brand != null && brand.toLowerCase().contains(needle)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void handleBlockedClient(Player player, String clientType, String brand, boolean broadcastToOps,
+                                     boolean broadcastToAll, boolean logToConsole) {
+        String clientLabel = clientType != null ? clientType : "Unknown";
+        String brandLabel = brand != null ? brand : "Unknown";
+
+        String alertMessage = chatUtil.getMessageWithPrefix("detection.blocked-client-alert")
+                .replace("%player%", player.getName())
+                .replace("%client%", clientLabel)
+                .replace("%brand%", brandLabel);
+
+        if (!alertMessage.isEmpty()) {
+            if (broadcastToAll) {
+                Bukkit.broadcastMessage(alertMessage);
+            } else if (broadcastToOps) {
+                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                    if (onlinePlayer.isOp()) {
+                        onlinePlayer.sendMessage(alertMessage);
+                    }
+                }
+            }
+        }
+
+        if (logToConsole) {
+            plugin.getLogger().warning("Blocked client detected for " + player.getName() + ": " + clientLabel +
+                    (brand != null ? " (Brand: " + brand + ")" : ""));
+        }
+
+        if (plugin.getConfig().getBoolean("detection.blocked-client-kick", true)) {
+            String kickMessage = chatUtil.getMessage("detection.blocked-client-kick");
+            if (kickMessage.isEmpty()) {
+                kickMessage = "Blocked client.";
+            }
+            player.kickPlayer(kickMessage);
         }
     }
 }

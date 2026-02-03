@@ -20,7 +20,11 @@ public final class JustDetector extends JavaPlugin {
 
         playerDataManager = new PlayerDataManager();
 
-        getCommand("detector").setExecutor(new DetectorCommands(this, playerDataManager));
+        DetectorCommands detectorCommands = new DetectorCommands(this, playerDataManager);
+        if (getCommand("justdetector") != null) {
+            getCommand("justdetector").setExecutor(detectorCommands);
+            getCommand("justdetector").setTabCompleter(detectorCommands);
+        }
 
         getServer().getPluginManager().registerEvents(new PlayerDetectionListener(this, playerDataManager), this);
 
@@ -41,6 +45,8 @@ public final class JustDetector extends JavaPlugin {
 
         getServer().getMessenger().registerIncomingPluginChannel(this, "fml:handshake", modListener);
         getServer().getMessenger().registerIncomingPluginChannel(this, "fml:loginwrapper", modListener);
+        getServer().getMessenger().registerIncomingPluginChannel(this, "forge:handshake", modListener);
+        getServer().getMessenger().registerIncomingPluginChannel(this, "forge:loginwrapper", modListener);
     }
 
     public ChatUtil getChatUtil() {

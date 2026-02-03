@@ -3,7 +3,37 @@
 # =======================
 # Prefix used for all plugin messages.
 # =======================
-prefix: "§x§3§3§A§8§F§F§lᴅ§x§3§C§A§D§F§F§lᴇ§x§4§5§B§2§F§F§lᴛ§x§4§E§B§7§F§F§lᴇ§x§5§7§B§C§F§F§lᴄ§x§6§0§C§1§F§F§lᴛ§x§6§9§C§6§F§F§lᴏ§x§7§2§C§B§F§F§lʀ §8» §f"
+prefix: "§x§A§2§8§B§5§9§lᴅ§x§A§4§8§D§5§A§lᴇ§x§A§5§8§E§5§C§lᴛ§x§A§7§9§0§5§D§lᴇ§x§A§9§9§1§5§E§lᴄ§x§A§A§9§3§6§0§lᴛ§x§A§C§9§4§6§1§lᴏ§x§A§C§9§4§6§1§lʀ §8» §f"
+
+# =======================
+# Messages
+# =======================
+# Messages shown in chat.
+# =======================
+messages:
+  join:
+    player-joined: "&e%player% &7ʜᴀꜱ ᴊᴏɪɴᴇᴅ ᴛʜᴇ ɢᴀᴍᴇ!"
+  detection:
+    client-detected: "&7ᴄʟɪᴇɴᴛ: &e%client_type%"
+    version-detected: "&7ᴠᴇʀꜱɪᴏɴ: &e%version%"
+    brand-detected: "&7ʙʀᴀɴᴅ: &e%brand%"
+    mods-detected-count: "&7ᴍᴏᴅꜱ: &e%count% &7ᴅᴇᴛᴇᴄᴛᴇᴅ"
+    blocked-client-alert: "&cʙʟᴏᴄᴋᴇᴅ ᴄʟɪᴇɴᴛ &e%client%&c ꜰᴏʀ &e%player%&c (&7%brand%&c)"
+    blocked-client-kick: "&cᴛʜɪꜱ ᴄʟɪᴇɴᴛ ɪꜱ ʙʟᴏᴄᴋᴇᴅ ᴏɴ ᴛʜɪꜱ ꜱᴇʀᴠᴇʀ."
+  commands:
+    no-permission: "&cʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪꜱꜱɪᴏɴ ᴛᴏ ᴜꜱᴇ ᴛʜɪꜱ."
+    player-not-found: "&cᴘʟᴀʏᴇʀ ɴᴏᴛ ꜰᴏᴜɴᴅ ᴏʀ ɴᴏᴛ ᴏɴʟɪɴᴇ!"
+    reload-success: "&aᴄᴏɴꜰɪɢ ʀᴇʟᴏᴀᴅᴇᴅ!"
+    usage-check: "&cᴜꜱᴇ: /jd check <ᴘʟᴀʏᴇʀ>"
+    unknown-command: "&cᴜɴᴋɴᴏᴡɴ ᴄᴏᴍᴍᴀɴᴅ. ᴜꜱᴇ /jd help"
+  mods-list:
+    header: "&7ᴄʟɪᴇɴᴛ ɪɴꜰᴏ ꜰᴏʀ &e%player%&7:"
+    client-type: "&7ᴄʟɪᴇɴᴛ ᴛʏᴘᴇ: &e%client_type%"
+    brand: "&7ʙʀᴀɴᴅ: &e%brand%"
+    version: "&7ᴠᴇʀꜱɪᴏɴ: &e%version%"
+    mods-count: "&7ᴍᴏᴅꜱ: &a%count% ᴅᴇᴛᴇᴄᴛᴇᴅ"
+    no-mods: "&7ᴍᴏᴅꜱ: &cɴᴏɴᴇ ᴅᴇᴛᴇᴄᴛᴇᴅ"
+    mod-format: "  &8• &e%mod_id% &7(%mod_version%)"
 
 # =======================
 # Detection Settings
@@ -18,3 +48,6 @@ detection:
   broadcast-to-ops: true
   broadcast-to-all: false
   log-to-console: true
+  blocked-client-kick: true
+  blocked-clients:
+    - "xynis"
