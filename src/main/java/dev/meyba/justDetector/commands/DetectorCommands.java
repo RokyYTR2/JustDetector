@@ -77,11 +77,18 @@ public class DetectorCommands implements CommandExecutor, TabCompleter {
     }
 
     private void showHelp(CommandSender sender) {
-        String prefix = ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("prefix", ""));
-        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', "&7ʜᴇʟᴘ ᴍᴇɴᴜ:"));
-        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', "&7/jd help - ꜱʜᴏᴡꜱ ᴛʜɪꜱ ʜᴇʟᴘ ᴍᴇɴᴜ"));
-        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', "&7/jd reload - ʀᴇʟᴏᴀᴅꜱ ᴛʜᴇ ᴄᴏɴꜰɪɢ"));
-        sender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', "&7/jd check <ᴘʟᴀʏᴇʀ> - ꜱʜᴏᴡꜱ ᴘʟᴀʏᴇʀ'ꜱ ᴍᴏᴅꜱ"));
+        String prefix = plugin.getConfig().getString("prefix", "");
+        sender.sendMessage(chatUtil.colorize(prefix + "&#D75555&l━━━━━━━━━━━━━━━━━━━━"));
+        sender.sendMessage(chatUtil.colorize(prefix + "&#D75555&lᴊ&#D75555&lᴜ&#D75555&lꜱ&#D75555&lᴛ&#D75555&lᴅ&#D75555&lᴇ&#D75555&lᴛ&#D75555&lᴇ&#D75555&lᴄ&#D75555&lᴛ&#D75555&lᴏ&#D75555&lʀ &#FFFFFFᴄᴏᴍᴍᴀɴᴅꜱ"));
+        sender.sendMessage(chatUtil.colorize(prefix + "&#D75555&l━━━━━━━━━━━━━━━━━━━━"));
+        sender.sendMessage("");
+        sender.sendMessage(chatUtil.colorize(prefix + " &#D75555&l● &#FFFFFFᴄᴏʀᴇ"));
+        sender.sendMessage(chatUtil.colorize(prefix + "   &#D24D4D/ᴊᴅ ʀᴇʟᴏᴀᴅ &#8E8E8E- &#7F7F7Fʀᴇʟᴏᴀᴅ ᴄᴏɴꜰɪɢᴜʀᴀᴛɪᴏɴ"));
+        sender.sendMessage(chatUtil.colorize(prefix + "   &#D24D4D/ᴊᴅ ʜᴇʟᴘ &#8E8E8E- &#7F7F7Fꜱʜᴏᴡ ᴛʜɪꜱ ᴍᴇɴᴜ"));
+        sender.sendMessage("");
+        sender.sendMessage(chatUtil.colorize(prefix + " &#D75555&l● &#FFFFFFᴅᴇᴛᴇᴄᴛ"));
+        sender.sendMessage(chatUtil.colorize(prefix + "   &#D24D4D/ᴊᴅ ᴄʜᴇᴄᴋ <ᴘʟᴀʏᴇʀ> &#8E8E8E- &#7F7F7Fꜱʜᴏᴡ ᴄʟɪᴇɴᴛ ɪɴꜰᴏ & ᴍᴏᴅꜱ"));
+        sender.sendMessage("");
     }
 
     private void showPlayerMods(CommandSender sender, Player target) {

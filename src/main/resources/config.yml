@@ -3,7 +3,7 @@
 # =======================
 # Prefix used for all plugin messages.
 # =======================
-prefix: "§x§A§2§8§B§5§9§lᴅ§x§A§4§8§D§5§A§lᴇ§x§A§5§8§E§5§C§lᴛ§x§A§7§9§0§5§D§lᴇ§x§A§9§9§1§5§E§lᴄ§x§A§A§9§3§6§0§lᴛ§x§A§C§9§4§6§1§lᴏ§x§A§C§9§4§6§1§lʀ §8» §f"
+prefix: "&#D75555&lᴊ&#D75454&lᴜ&#D65454&lꜱ&#D65353&lᴛ&#D55252&lᴅ&#D55151&lᴇ&#D45151&lᴛ&#D45050&lᴇ&#D34F4F&lᴄ&#D34E4E&lᴛ&#D24E4E&lᴏ&#D24D4D&lʀ §8» §f"
 
 # =======================
 # Messages
@@ -12,28 +12,28 @@ prefix: "§x§A§2§8§B§5§9§lᴅ§x§A§4§8§D§5§A§lᴇ§x§A§5§8§E§
 # =======================
 messages:
   join:
-    player-joined: "&e%player% &7ʜᴀꜱ ᴊᴏɪɴᴇᴅ ᴛʜᴇ ɢᴀᴍᴇ!"
+    player-joined: "&#A8E6A8✔ &#FFFFFF%player% &#7F7F7Fʜᴀꜱ ᴊᴏɪɴᴇᴅ ᴛʜᴇ ɢᴀᴍᴇ!"
   detection:
-    client-detected: "&7ᴄʟɪᴇɴᴛ: &e%client_type%"
-    version-detected: "&7ᴠᴇʀꜱɪᴏɴ: &e%version%"
-    brand-detected: "&7ʙʀᴀɴᴅ: &e%brand%"
-    mods-detected-count: "&7ᴍᴏᴅꜱ: &e%count% &7ᴅᴇᴛᴇᴄᴛᴇᴅ"
-    blocked-client-alert: "&cʙʟᴏᴄᴋᴇᴅ ᴄʟɪᴇɴᴛ &e%client%&c ꜰᴏʀ &e%player%&c (&7%brand%&c)"
-    blocked-client-kick: "&cᴛʜɪꜱ ᴄʟɪᴇɴᴛ ɪꜱ ʙʟᴏᴄᴋᴇᴅ ᴏɴ ᴛʜɪꜱ ꜱᴇʀᴠᴇʀ."
+    client-detected: "&#D24D4D• &#FFFFFFᴄʟɪᴇɴᴛ: &#D24D4D%client_type%"
+    version-detected: "&#D24D4D• &#FFFFFFᴠᴇʀꜱɪᴏɴ: &#D24D4D%version%"
+    brand-detected: "&#D24D4D• &#FFFFFFʙʀᴀɴᴅ: &#D24D4D%brand%"
+    mods-detected-count: "&#D24D4D• &#FFFFFFᴍᴏᴅꜱ: &#D24D4D%count% &#FFFFFFᴅᴇᴛᴇᴄᴛᴇᴅ"
+    blocked-client-alert: "&#FF6B6B✘ &#FFFFFFʙʟᴏᴄᴋᴇᴅ ᴄʟɪᴇɴᴛ &#D24D4D%client% &#FFFFFFꜰᴏʀ &#D24D4D%player% &#8E8E8E(%brand%)"
+    blocked-client-kick: "&#FF6B6B✘ &#FFFFFFᴛʜɪꜱ ᴄʟɪᴇɴᴛ ɪꜱ ʙʟᴏᴄᴋᴇᴅ ᴏɴ ᴛʜɪꜱ ꜱᴇʀᴠᴇʀ."
   commands:
-    no-permission: "&cʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪꜱꜱɪᴏɴ ᴛᴏ ᴜꜱᴇ ᴛʜɪꜱ."
-    player-not-found: "&cᴘʟᴀʏᴇʀ ɴᴏᴛ ꜰᴏᴜɴᴅ ᴏʀ ɴᴏᴛ ᴏɴʟɪɴᴇ!"
-    reload-success: "&aᴄᴏɴꜰɪɢ ʀᴇʟᴏᴀᴅᴇᴅ!"
-    usage-check: "&cᴜꜱᴇ: /jd check <ᴘʟᴀʏᴇʀ>"
-    unknown-command: "&cᴜɴᴋɴᴏᴡɴ ᴄᴏᴍᴍᴀɴᴅ. ᴜꜱᴇ /jd help"
+    no-permission: "&#FF6B6B✘ &#FFFFFFʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪꜱꜱɪᴏɴ ᴛᴏ ᴜꜱᴇ ᴛʜɪꜱ."
+    player-not-found: "&#FF6B6B✘ &#FFFFFFᴘʟᴀʏᴇʀ &#D24D4D%player% &#FFFFFFᴡᴀs ɴᴏᴛ ꜰᴏᴜɴᴅ!"
+    reload-success: "&#A8E6A8✔ &#FFFFFFᴄᴏɴꜰɪɢ ʀᴇʟᴏᴀᴅᴇᴅ!"
+    usage-check: "&#FF6B6B✘ &#FFFFFFᴜꜱᴇ: &#D24D4D/jd check <player>"
+    unknown-command: "&#FF6B6B✘ &#FFFFFFᴜɴᴋɴᴏᴡɴ ᴄᴏᴍᴍᴀɴᴅ. &#D24D4Dᴜꜱᴇ /jd help"
   mods-list:
-    header: "&7ᴄʟɪᴇɴᴛ ɪɴꜰᴏ ꜰᴏʀ &e%player%&7:"
-    client-type: "&7ᴄʟɪᴇɴᴛ ᴛʏᴘᴇ: &e%client_type%"
-    brand: "&7ʙʀᴀɴᴅ: &e%brand%"
-    version: "&7ᴠᴇʀꜱɪᴏɴ: &e%version%"
-    mods-count: "&7ᴍᴏᴅꜱ: &a%count% ᴅᴇᴛᴇᴄᴛᴇᴅ"
-    no-mods: "&7ᴍᴏᴅꜱ: &cɴᴏɴᴇ ᴅᴇᴛᴇᴄᴛᴇᴅ"
-    mod-format: "  &8• &e%mod_id% &7(%mod_version%)"
+    header: "&#D75555&l━━━━━ &#FFFFFF%player% &#D75555&l━━━━━"
+    client-type: "&#D24D4D• &#FFFFFFᴄʟɪᴇɴᴛ ᴛʏᴘᴇ: &#D24D4D%client_type%"
+    brand: "&#D24D4D• &#FFFFFFʙʀᴀɴᴅ: &#D24D4D%brand%"
+    version: "&#D24D4D• &#FFFFFFᴠᴇʀꜱɪᴏɴ: &#D24D4D%version%"
+    mods-count: "&#D24D4D• &#FFFFFFᴍᴏᴅꜱ: &#D24D4D%count% &#FFFFFFᴅᴇᴛᴇᴄᴛᴇᴅ"
+    no-mods: "&#FF6B6B✘ &#FFFFFFᴍᴏᴅꜱ: &#FF6B6Bɴᴏɴᴇ ᴅᴇᴛᴇᴄᴛᴇᴅ"
+    mod-format: "  &#D24D4D• &#FFFFFF%mod_id% &#8E8E8E(%mod_version%)"
 
 # =======================
 # Detection Settings
