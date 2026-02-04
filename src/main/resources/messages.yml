@@ -14,6 +14,8 @@ detection:
   mods-detected-count: "&#D24D4D• &#FFFFFFᴍᴏᴅꜱ: &#D24D4D%count% &#FFFFFFᴅᴇᴛᴇᴄᴛᴇᴅ"
   blocked-client-alert: "&#FF6B6B✘ &#FFFFFFʙʟᴏᴄᴋᴇᴅ ᴄʟɪᴇɴᴛ &#D24D4D%client% &#FFFFFFꜰᴏʀ &#D24D4D%player% &#8E8E8E(%brand%)"
   blocked-client-kick: "&#FF6B6B✘ &#FFFFFFᴛʜɪꜱ ᴄʟɪᴇɴᴛ ɪꜱ ʙʟᴏᴄᴋᴇᴅ ᴏɴ ᴛʜɪꜱ ꜱᴇʀᴠᴇʀ."
+  blocked-mod-alert: "&#FF6B6B✘ &#FFFFFFʙʟᴏᴄᴋᴇᴅ ᴍᴏᴅꜱ ꜰᴏʀ &#D24D4D%player%&#FFFFFF: &#D24D4D%mods%"
+  blocked-mod-kick: "&#FF6B6B✘ &#FFFFFFᴛʜɪꜱ ᴍᴏᴅ ɪꜱ ʙʟᴏᴄᴋᴇᴅ ᴏɴ ᴛʜɪꜱ ꜱᴇʀᴠᴇʀ."
 
 commands:
   no-permission: "&#FF6B6B✘ &#FFFFFFʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪꜱꜱɪᴏɴ ᴛᴏ ᴜꜱᴇ ᴛʜɪꜱ."

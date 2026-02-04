@@ -4,6 +4,7 @@ import dev.meyba.justDetector.JustDetector;
 import dev.meyba.justDetector.managers.PlayerDataManager;
 import dev.meyba.justDetector.utils.ChatUtil;
 import dev.meyba.justDetector.utils.ClientDetector;
+import dev.meyba.justDetector.utils.DiscordWebhook;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -101,6 +102,13 @@ public class PlayerDetectionListener implements Listener {
     private void broadcastModInfo(Player player) {
         PlayerDataManager.PlayerData data = playerDataManager.getPlayerData(player);
 
+        DiscordWebhook.sendDetection(plugin, player, data);
+
+        boolean blocked = handleBlockedMods(player, data);
+        if (blocked) {
+            return;
+        }
+
         if (!plugin.getConfig().getBoolean("detection.show-mods", true)) {
             return;
         }
@@ -165,12 +173,72 @@ public class PlayerDetectionListener implements Listener {
                     (brand != null ? " (Brand: " + brand + ")" : ""));
         }
 
-        if (plugin.getConfig().getBoolean("detection.blocked-client-kick", true)) {
+        if (plugin.getConfig().getBoolean("detection.blocked-client-kick", true) &&
+                !player.hasPermission("justdetector.bypass")) {
             String kickMessage = chatUtil.getMessage("detection.blocked-client-kick");
             if (kickMessage.isEmpty()) {
                 kickMessage = "Blocked client.";
             }
             player.kickPlayer(kickMessage);
         }
+    }
+
+    private boolean handleBlockedMods(Player player, PlayerDataManager.PlayerData data) {
+        if (data.getMods().isEmpty()) {
+            return false;
+        }
+
+        boolean broadcastToOps = plugin.getConfig().getBoolean("detection.broadcast-to-ops", true);
+        boolean logToConsole = plugin.getConfig().getBoolean("detection.log-to-console", true);
+
+        java.util.List<String> blockedMods = plugin.getConfig().getStringList("detection.blocked-mod-ids");
+        if (blockedMods.isEmpty()) {
+            return false;
+        }
+
+        java.util.List<String> matched = new java.util.ArrayList<>();
+        for (String modId : data.getMods().keySet()) {
+            String lower = modId.toLowerCase();
+            for (String blocked : blockedMods) {
+                if (blocked == null || blocked.isBlank()) {
+                    continue;
+                }
+                if (lower.contains(blocked.toLowerCase())) {
+                    matched.add(modId);
+                    break;
+                }
+            }
+        }
+
+        if (matched.isEmpty()) {
+            return false;
+        }
+
+        String list = String.join(", ", matched);
+        String alertMessage = chatUtil.getMessageWithPrefix("detection.blocked-mod-alert")
+                .replace("%player%", player.getName())
+                .replace("%mods%", list);
+
+        if (!alertMessage.isEmpty() && broadcastToOps) {
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                if (onlinePlayer.isOp()) {
+                    onlinePlayer.sendMessage(alertMessage);
+                }
+            }
+        }
+
+        if (logToConsole) {
+            plugin.getLogger().warning("Blocked mods detected for " + player.getName() + ": " + list);
+        }
+
+        if (plugin.getConfig().getBoolean("detection.blocked-mod-kick", true) &&
+                !player.hasPermission("justdetector.bypass")) {
+            String kickMessage = chatUtil.getMessage("detection.blocked-mod-kick");
+            if (kickMessage.isEmpty()) {
+                kickMessage = "Blocked mods.";
+            }
+            player.kickPlayer(kickMessage);
+        }
+        return true;
     }
 }

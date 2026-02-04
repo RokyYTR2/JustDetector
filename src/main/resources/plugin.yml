@@ -19,6 +19,7 @@ permissions:
       justdetector.reload: true
       justdetector.help: true
       justdetector.view: true
+      justdetector.bypass: true
   justdetector.use:
     description: Allows use of basic detector commands
     default: op
@@ -30,4 +31,7 @@ permissions:
     default: true
   justdetector.view:
     description: Allows viewing detection messages
+    default: op
+  justdetector.bypass:
+    description: Bypass kicks from detector rules
     default: op

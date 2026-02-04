@@ -18,8 +18,19 @@ detection:
   broadcast-to-ops: true
   log-to-console: true
   blocked-client-kick: true
+  blocked-mod-kick: true
   blocked-clients:
     - "xynis"
     - "liquidbounce"
     - "meteor"
     - "wurst"
+  blocked-mod-ids:
+    - "xynis"
+    - "meteor"
+    - "wurst"
+  discord-webhook:
+    enabled: false
+    url: ""
+    username: "JustDetector"
+    avatar-url: ""
+    color: 14110037
