@@ -1,0 +1,32 @@
+# =======================
+# JustDetector Messages
+# =======================
+# Messages shown in chat.
+# =======================
+
+join:
+  player-joined: "&#A8E6A8✔ &#FFFFFF%player% &#7F7F7Fʜᴀꜱ ᴊᴏɪɴᴇᴅ ᴛʜᴇ ɢᴀᴍᴇ!"
+
+detection:
+  client-detected: "&#D24D4D• &#FFFFFFᴄʟɪᴇɴᴛ: &#D24D4D%client_type%"
+  version-detected: "&#D24D4D• &#FFFFFFᴠᴇʀꜱɪᴏɴ: &#D24D4D%version%"
+  brand-detected: "&#D24D4D• &#FFFFFFʙʀᴀɴᴅ: &#D24D4D%brand%"
+  mods-detected-count: "&#D24D4D• &#FFFFFFᴍᴏᴅꜱ: &#D24D4D%count% &#FFFFFFᴅᴇᴛᴇᴄᴛᴇᴅ"
+  blocked-client-alert: "&#FF6B6B✘ &#FFFFFFʙʟᴏᴄᴋᴇᴅ ᴄʟɪᴇɴᴛ &#D24D4D%client% &#FFFFFFꜰᴏʀ &#D24D4D%player% &#8E8E8E(%brand%)"
+  blocked-client-kick: "&#FF6B6B✘ &#FFFFFFᴛʜɪꜱ ᴄʟɪᴇɴᴛ ɪꜱ ʙʟᴏᴄᴋᴇᴅ ᴏɴ ᴛʜɪꜱ ꜱᴇʀᴠᴇʀ."
+
+commands:
+  no-permission: "&#FF6B6B✘ &#FFFFFFʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪꜱꜱɪᴏɴ ᴛᴏ ᴜꜱᴇ ᴛʜɪꜱ."
+  player-not-found: "&#FF6B6B✘ &#FFFFFFᴘʟᴀʏᴇʀ &#D24D4D%player% &#FFFFFFᴡᴀs ɴᴏᴛ ꜰᴏᴜɴᴅ!"
+  reload-success: "&#A8E6A8✔ &#FFFFFFᴄᴏɴꜰɪɢ ʀᴇʟᴏᴀᴅᴇᴅ!"
+  usage-check: "&#FF6B6B✘ &#FFFFFFᴜꜱᴇ: &#D24D4D/jd check <player>"
+  unknown-command: "&#FF6B6B✘ &#FFFFFFᴜɴᴋɴᴏᴡɴ ᴄᴏᴍᴍᴀɴᴅ. &#D24D4Dᴜꜱᴇ /jd help"
+
+mods-list:
+  header: "&#D75555&l━━━━━ &#FFFFFF%player% &#D75555&l━━━━━"
+  client-type: "&#D24D4D• &#FFFFFFᴄʟɪᴇɴᴛ ᴛʏᴘᴇ: &#D24D4D%client_type%"
+  brand: "&#D24D4D• &#FFFFFFʙʀᴀɴᴅ: &#D24D4D%brand%"
+  version: "&#D24D4D• &#FFFFFFᴠᴇʀꜱɪᴏɴ: &#D24D4D%version%"
+  mods-count: "&#D24D4D• &#FFFFFFᴍᴏᴅꜱ: &#D24D4D%count% &#FFFFFFᴅᴇᴛᴇᴄᴛᴇᴅ"
+  no-mods: "&#FF6B6B✘ &#FFFFFFᴍᴏᴅꜱ: &#FF6B6Bɴᴏɴᴇ ᴅᴇᴛᴇᴄᴛᴇᴅ"
+  mod-format: "  &#D24D4D• &#FFFFFF%mod_id% &#8E8E8E(%mod_version%)"

@@ -43,6 +43,7 @@ public class DetectorCommands implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 plugin.reloadConfig();
+                chatUtil.reloadMessages();
                 sender.sendMessage(chatUtil.getMessageWithPrefix("commands.reload-success"));
                 return true;
 

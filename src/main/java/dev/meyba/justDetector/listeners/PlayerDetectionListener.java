@@ -57,11 +57,10 @@ public class PlayerDetectionListener implements Listener {
         boolean showVersion = plugin.getConfig().getBoolean("detection.show-version", true);
         boolean showBrand = plugin.getConfig().getBoolean("detection.show-brand", true);
         boolean broadcastToOps = plugin.getConfig().getBoolean("detection.broadcast-to-ops", true);
-        boolean broadcastToAll = plugin.getConfig().getBoolean("detection.broadcast-to-all", false);
         boolean logToConsole = plugin.getConfig().getBoolean("detection.log-to-console", true);
 
         if (isBlockedClient(clientType, brand)) {
-            handleBlockedClient(player, clientType, brand, broadcastToOps, broadcastToAll, logToConsole);
+            handleBlockedClient(player, clientType, brand, broadcastToOps, logToConsole);
             return;
         }
 
@@ -85,9 +84,7 @@ public class PlayerDetectionListener implements Listener {
 
         String broadcastMessage = finalMessage + detectionInfo.toString();
 
-        if (broadcastToAll) {
-            Bukkit.broadcastMessage(broadcastMessage);
-        } else if (broadcastToOps) {
+        if (broadcastToOps) {
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 if (onlinePlayer.isOp()) {
                     onlinePlayer.sendMessage(broadcastMessage);
@@ -110,15 +107,12 @@ public class PlayerDetectionListener implements Listener {
 
         if (data.getModCount() > 0) {
             boolean broadcastToOps = plugin.getConfig().getBoolean("detection.broadcast-to-ops", true);
-            boolean broadcastToAll = plugin.getConfig().getBoolean("detection.broadcast-to-all", false);
             boolean logToConsole = plugin.getConfig().getBoolean("detection.log-to-console", true);
 
             String modMessage = chatUtil.getMessageWithPrefix("detection.mods-detected-count")
                     .replace("%count%", String.valueOf(data.getModCount()));
 
-            if (broadcastToAll) {
-                Bukkit.broadcastMessage(modMessage);
-            } else if (broadcastToOps) {
+            if (broadcastToOps) {
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     if (onlinePlayer.isOp()) {
                         onlinePlayer.sendMessage(modMessage);
@@ -149,7 +143,7 @@ public class PlayerDetectionListener implements Listener {
     }
 
     private void handleBlockedClient(Player player, String clientType, String brand, boolean broadcastToOps,
-                                     boolean broadcastToAll, boolean logToConsole) {
+                                     boolean logToConsole) {
         String clientLabel = clientType != null ? clientType : "Unknown";
         String brandLabel = brand != null ? brand : "Unknown";
 
@@ -158,14 +152,10 @@ public class PlayerDetectionListener implements Listener {
                 .replace("%client%", clientLabel)
                 .replace("%brand%", brandLabel);
 
-        if (!alertMessage.isEmpty()) {
-            if (broadcastToAll) {
-                Bukkit.broadcastMessage(alertMessage);
-            } else if (broadcastToOps) {
-                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                    if (onlinePlayer.isOp()) {
-                        onlinePlayer.sendMessage(alertMessage);
-                    }
+        if (!alertMessage.isEmpty() && broadcastToOps) {
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                if (onlinePlayer.isOp()) {
+                    onlinePlayer.sendMessage(alertMessage);
                 }
             }
         }

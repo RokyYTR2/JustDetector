@@ -10,7 +10,6 @@ commands:
     description: Manages detector settings
     usage: /<command> [reload|help|check <player>]
     aliases: [ detector, jd ]
-
 permissions:
   justdetector.*:
     description: Gives access to all JustDetector commands
