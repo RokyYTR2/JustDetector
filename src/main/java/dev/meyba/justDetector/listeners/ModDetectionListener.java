@@ -50,9 +50,7 @@ public class ModDetectionListener implements PluginMessageListener {
             if (tryParseVarIntHandshake(player, message)) {
                 return;
             }
-            if (tryParseLegacyHandshake(player, message)) {
-                return;
-            }
+            if (tryParseLegacyHandshake(player, message)) {}
         } catch (Exception e) {
             plugin.getLogger().warning("Error handling Forge handshake: " + e.getMessage());
         }

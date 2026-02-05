@@ -41,6 +41,8 @@ public class ClientDetector {
         int protocol = player.getProtocolVersion();
 
         return switch (protocol) {
+            case 774 -> "1.21.11";
+            case 773 -> "1.21.9/1.21.10";
             case 772 -> "1.21.7/1.21.8";
             case 771 -> "1.21.6";
             case 770 -> "1.21.5";
