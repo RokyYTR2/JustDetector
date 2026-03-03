@@ -5,14 +5,31 @@ import dev.meyba.justDetector.managers.PlayerDataManager;
 import dev.meyba.justDetector.utils.ChatUtil;
 import dev.meyba.justDetector.utils.ClientDetector;
 import dev.meyba.justDetector.utils.DiscordWebhook;
+import dev.meyba.justDetector.utils.ModChannelDatabase;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRegisterChannelEvent;
+import org.bukkit.event.player.PlayerUnregisterChannelEvent;
+
+import java.util.*;
 
 public class PlayerDetectionListener implements Listener {
+    private static final Set<String> DEFAULT_IGNORED_CHANNELS = Set.of(
+            "minecraft:brand",
+            "minecraft:register",
+            "minecraft:unregister"
+    );
+    private static final Set<String> DEFAULT_IGNORED_NAMESPACES = Set.of(
+            "minecraft",
+            "bungeecord",
+            "velocity"
+    );
+    private static final String INFERRED_VERSION = "inferred";
+
     private final JustDetector plugin;
     private final PlayerDataManager playerDataManager;
     private final ChatUtil chatUtil;
@@ -28,8 +45,12 @@ public class PlayerDetectionListener implements Listener {
         Player player = event.getPlayer();
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            detectAndBroadcast(player);
+            scanPluginChannels(player);
         }, 20L);
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            detectAndBroadcast(player);
+        }, 40L);
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             broadcastModInfo(player);
@@ -39,6 +60,21 @@ public class PlayerDetectionListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         playerDataManager.removePlayerData(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onPlayerRegisterChannel(PlayerRegisterChannelEvent event) {
+        handlePluginChannel(event.getPlayer(), event.getChannel());
+    }
+
+    @EventHandler
+    public void onPlayerUnregisterChannel(PlayerUnregisterChannelEvent event) {
+        String normalized = normalizeChannel(event.getChannel());
+        if (normalized.isEmpty()) {
+            return;
+        }
+        PlayerDataManager.PlayerData data = playerDataManager.getPlayerData(event.getPlayer());
+        data.removePluginChannel(normalized);
     }
 
     private void detectAndBroadcast(Player player) {
@@ -99,6 +135,113 @@ public class PlayerDetectionListener implements Listener {
         }
     }
 
+    private void scanPluginChannels(Player player) {
+        if (!isChannelDetectionEnabled()) {
+            return;
+        }
+
+        for (String channel : player.getListeningPluginChannels()) {
+            handlePluginChannel(player, channel);
+        }
+    }
+
+    private void handlePluginChannel(Player player, String channel) {
+        if (!isChannelDetectionEnabled()) {
+            return;
+        }
+
+        String normalized = normalizeChannel(channel);
+        if (normalized.isEmpty()) {
+            return;
+        }
+
+        Set<String> ignoredChannels = getNormalizedSet(
+                "detection.channel-detection.ignored-channels",
+                DEFAULT_IGNORED_CHANNELS
+        );
+        if (ignoredChannels.contains(normalized)) {
+            return;
+        }
+
+        PlayerDataManager.PlayerData data = playerDataManager.getPlayerData(player);
+        boolean added = data.addPluginChannel(normalized);
+        if (!added) {
+            return;
+        }
+
+        ModChannelDatabase.ModInfo knownMod = ModChannelDatabase.lookup(normalized);
+        if (knownMod != null) {
+            if (!data.getMods().containsKey(knownMod.getModId())) {
+                data.addMod(knownMod.getModId(), INFERRED_VERSION);
+                data.setModsDetected(true);
+            }
+            return;
+        }
+
+        if (shouldInferModIds()) {
+            Set<String> ignoredNamespaces = getNormalizedSet(
+                    "detection.channel-detection.ignored-namespaces",
+                    DEFAULT_IGNORED_NAMESPACES
+            );
+            String modId = inferModId(normalized, ignoredNamespaces);
+            if (modId != null && !data.getMods().containsKey(modId)) {
+                data.addMod(modId, INFERRED_VERSION);
+                data.setModsDetected(true);
+            }
+        }
+    }
+
+    private boolean isChannelDetectionEnabled() {
+        return plugin.getConfig().getBoolean("detection.channel-detection.enabled", true);
+    }
+
+    private boolean shouldInferModIds() {
+        return plugin.getConfig().getBoolean("detection.channel-detection.infer-mod-ids", true);
+    }
+
+    private String inferModId(String channel, Set<String> ignoredNamespaces) {
+        String modId = channel;
+        int colon = channel.indexOf(':');
+        if (colon > 0) {
+            modId = channel.substring(0, colon);
+        } else {
+            int pipe = channel.indexOf('|');
+            if (pipe > 0) {
+                modId = channel.substring(0, pipe);
+            }
+        }
+
+        if (modId.isBlank()) {
+            return null;
+        }
+        if (ignoredNamespaces.contains(modId)) {
+            return null;
+        }
+        return modId;
+    }
+
+    private Set<String> getNormalizedSet(String path, Set<String> fallback) {
+        List<String> list = plugin.getConfig().getStringList(path);
+        if (list == null || list.isEmpty()) {
+            return fallback;
+        }
+        Set<String> normalized = new HashSet<>();
+        for (String item : list) {
+            if (item == null || item.isBlank()) {
+                continue;
+            }
+            normalized.add(normalizeChannel(item));
+        }
+        return normalized.isEmpty() ? fallback : normalized;
+    }
+
+    private String normalizeChannel(String channel) {
+        if (channel == null) {
+            return "";
+        }
+        return channel.trim().toLowerCase(Locale.ROOT);
+    }
+
     private void broadcastModInfo(Player player) {
         PlayerDataManager.PlayerData data = playerDataManager.getPlayerData(player);
 
@@ -117,19 +260,30 @@ public class PlayerDetectionListener implements Listener {
             boolean broadcastToOps = plugin.getConfig().getBoolean("detection.broadcast-to-ops", true);
             boolean logToConsole = plugin.getConfig().getBoolean("detection.log-to-console", true);
 
-            String modMessage = chatUtil.getMessageWithPrefix("detection.mods-detected-count")
-                    .replace("%count%", String.valueOf(data.getModCount()));
+            List<String> modEntries = new java.util.ArrayList<>();
+            for (Map.Entry<String, String> entry : data.getMods().entrySet()) {
+                String ver = entry.getValue();
+                if (ver == null || ver.equals("?") || ver.equals("inferred")) {
+                    modEntries.add(entry.getKey());
+                } else {
+                    modEntries.add(entry.getKey() + " (" + ver + ")");
+                }
+            }
+            String modList = String.join(", ", modEntries);
+
+            String message = chatUtil.getMessageWithPrefix("detection.mods-detected-list")
+                    .replace("%mods%", modList);
 
             if (broadcastToOps) {
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     if (onlinePlayer.isOp()) {
-                        onlinePlayer.sendMessage(modMessage);
+                        onlinePlayer.sendMessage(message);
                     }
                 }
             }
 
             if (logToConsole) {
-                plugin.getLogger().info("Detected " + data.getModCount() + " mods for player " + player.getName());
+                plugin.getLogger().info("Detected " + data.getModCount() + " mods for player " + player.getName() + ": " + modList);
             }
         }
     }

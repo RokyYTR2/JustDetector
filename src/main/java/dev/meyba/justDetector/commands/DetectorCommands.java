@@ -111,9 +111,21 @@ public class DetectorCommands implements CommandExecutor, TabCompleter {
             sender.sendMessage(chatUtil.getMessageWithPrefix("mods-list.mods-count")
                     .replace("%count%", String.valueOf(mods.size())));
             for (Map.Entry<String, String> mod : mods.entrySet()) {
-                sender.sendMessage(chatUtil.getMessageWithPrefix("mods-list.mod-format")
-                        .replace("%mod_id%", mod.getKey())
-                        .replace("%mod_version%", mod.getValue()));
+                String modVersion = mod.getValue();
+                if (modVersion == null || modVersion.equals("?") || modVersion.equalsIgnoreCase("inferred")) {
+                    String noVersionFormat = chatUtil.getMessageWithPrefix("mods-list.mod-format-no-version");
+                    if (noVersionFormat == null || noVersionFormat.isBlank()) {
+                        noVersionFormat = chatUtil.getMessageWithPrefix("mods-list.mod-format")
+                                .replace("(%mod_version%)", "")
+                                .replace("%mod_version%", "")
+                                .trim();
+                    }
+                    sender.sendMessage(noVersionFormat.replace("%mod_id%", mod.getKey()));
+                } else {
+                    sender.sendMessage(chatUtil.getMessageWithPrefix("mods-list.mod-format")
+                            .replace("%mod_id%", mod.getKey())
+                            .replace("%mod_version%", modVersion));
+                }
             }
         }
     }

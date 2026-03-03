@@ -12,6 +12,7 @@ detection:
   version-detected: "&#D24D4D• &#FFFFFFᴠᴇʀꜱɪᴏɴ: &#D24D4D%version%"
   brand-detected: "&#D24D4D• &#FFFFFFʙʀᴀɴᴅ: &#D24D4D%brand%"
   mods-detected-count: "&#D24D4D• &#FFFFFFᴍᴏᴅꜱ: &#D24D4D%count% &#FFFFFFᴅᴇᴛᴇᴄᴛᴇᴅ"
+  mods-detected-list: "&#D24D4D• &#FFFFFFᴍᴏᴅꜱ: &#D24D4D%mods%"
   blocked-client-alert: "&#FF6B6B✘ &#FFFFFFʙʟᴏᴄᴋᴇᴅ ᴄʟɪᴇɴᴛ &#D24D4D%client% &#FFFFFFꜰᴏʀ &#D24D4D%player% &#8E8E8E(%brand%)"
   blocked-client-kick: "&#FF6B6B✘ &#FFFFFFᴛʜɪꜱ ᴄʟɪᴇɴᴛ ɪꜱ ʙʟᴏᴄᴋᴇᴅ ᴏɴ ᴛʜɪꜱ ꜱᴇʀᴠᴇʀ."
   blocked-mod-alert: "&#FF6B6B✘ &#FFFFFFʙʟᴏᴄᴋᴇᴅ ᴍᴏᴅꜱ ꜰᴏʀ &#D24D4D%player%&#FFFFFF: &#D24D4D%mods%"
@@ -32,3 +33,4 @@ mods-list:
   mods-count: "&#D24D4D• &#FFFFFFᴍᴏᴅꜱ: &#D24D4D%count% &#FFFFFFᴅᴇᴛᴇᴄᴛᴇᴅ"
   no-mods: "&#FF6B6B✘ &#FFFFFFᴍᴏᴅꜱ: &#FF6B6Bɴᴏɴᴇ ᴅᴇᴛᴇᴄᴛᴇᴅ"
   mod-format: "  &#D24D4D• &#FFFFFF%mod_id% &#8E8E8E(%mod_version%)"
+  mod-format-no-version: "  &#D24D4D• &#FFFFFF%mod_id%"

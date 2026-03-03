@@ -45,8 +45,19 @@ public final class JustDetector extends JavaPlugin {
 
         getServer().getMessenger().registerIncomingPluginChannel(this, "fml:handshake", modListener);
         getServer().getMessenger().registerIncomingPluginChannel(this, "fml:loginwrapper", modListener);
+        getServer().getMessenger().registerIncomingPluginChannel(this, "fml:play", modListener);
         getServer().getMessenger().registerIncomingPluginChannel(this, "forge:handshake", modListener);
         getServer().getMessenger().registerIncomingPluginChannel(this, "forge:loginwrapper", modListener);
+        getServer().getMessenger().registerIncomingPluginChannel(this, "forge:tier_sorting", modListener);
+        getServer().getMessenger().registerIncomingPluginChannel(this, "forge:split", modListener);
+
+        getServer().getMessenger().registerIncomingPluginChannel(this, "neoforge:handshake", modListener);
+        getServer().getMessenger().registerIncomingPluginChannel(this, "neoforge:play", modListener);
+        getServer().getMessenger().registerIncomingPluginChannel(this, "neoforge:tier_sorting", modListener);
+
+        getServer().getMessenger().registerIncomingPluginChannel(this, "fabric:registry/sync", modListener);
+        getServer().getMessenger().registerIncomingPluginChannel(this, "fabric-networking-api-v1:early_registration", modListener);
+        getServer().getMessenger().registerIncomingPluginChannel(this, "fabric-screen-handler-api-v1:open_screen", modListener);
     }
 
     public ChatUtil getChatUtil() {

@@ -1,5 +1,5 @@
 name: JustDetector
-version: '0.0.1'
+version: '${version}'
 main: dev.meyba.justDetector.JustDetector
 api-version: '1.21'
 authors: [ Meyba._., Jezevcik20 ]

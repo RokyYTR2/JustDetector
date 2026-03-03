@@ -9,15 +9,13 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ModDetectionListener implements PluginMessageListener {
-    private static final String CHANNEL_FML_HANDSHAKE = "fml:handshake";
-    private static final String CHANNEL_FML_LOGINWRAPPER = "fml:loginwrapper";
-    private static final String CHANNEL_FORGE_HANDSHAKE = "forge:handshake";
-    private static final String CHANNEL_FORGE_LOGINWRAPPER = "forge:loginwrapper";
-
     private final JustDetector plugin;
     private final PlayerDataManager playerDataManager;
 
@@ -28,31 +26,46 @@ public class ModDetectionListener implements PluginMessageListener {
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-        if (isHandshakeChannel(channel)) {
-            handleForgeHandshake(player, message);
+        if (message == null || message.length == 0) {
             return;
         }
-        if (isLoginWrapperChannel(channel)) {
-            handleForgeLoginWrapper(player, message);
+
+        String lower = channel.toLowerCase();
+
+        if (lower.equals("fml:handshake") || lower.equals("forge:handshake")) {
+            handleForgeHandshake(player, message, channel);
+            return;
         }
+
+        if (lower.equals("fml:loginwrapper") || lower.equals("forge:loginwrapper")) {
+            handleForgeLoginWrapper(player, message);
+            return;
+        }
+
+        if (lower.startsWith("neoforge:")) {
+            handleNeoForge(player, message, channel);
+            return;
+        }
+
+        if (lower.equals("fabric:registry/sync") || lower.startsWith("fabric:")) {
+            handleFabricChannel(player, message, channel);
+            return;
+        }
+
+        tryGenericModListParse(player, message, channel);
     }
 
-    private boolean isHandshakeChannel(String channel) {
-        return CHANNEL_FML_HANDSHAKE.equals(channel) || CHANNEL_FORGE_HANDSHAKE.equals(channel);
-    }
-
-    private boolean isLoginWrapperChannel(String channel) {
-        return CHANNEL_FML_LOGINWRAPPER.equals(channel) || CHANNEL_FORGE_LOGINWRAPPER.equals(channel);
-    }
-
-    private void handleForgeHandshake(Player player, byte[] message) {
+    private void handleForgeHandshake(Player player, byte[] message, String channel) {
         try {
             if (tryParseVarIntHandshake(player, message)) {
                 return;
             }
-            if (tryParseLegacyHandshake(player, message)) {}
+            if (tryParseLegacyHandshake(player, message)) {
+                return;
+            }
+            tryParseExtendedHandshake(player, message);
         } catch (Exception e) {
-            plugin.getLogger().warning("Error handling Forge handshake: " + e.getMessage());
+            plugin.getLogger().warning("Error handling Forge handshake on " + channel + ": " + e.getMessage());
         }
     }
 
@@ -64,21 +77,27 @@ public class ModDetectionListener implements PluginMessageListener {
         try {
             ByteArrayInputStream in = new ByteArrayInputStream(message);
             int discriminator = readVarInt(in);
-            if (discriminator != 2) {
-                return false;
+
+            if (discriminator == 2) {
+                int modCount = readVarInt(in);
+                if (modCount < 0 || modCount > 5000) {
+                    return false;
+                }
+                Map<String, String> mods = new LinkedHashMap<>();
+                for (int i = 0; i < modCount; i++) {
+                    String modId = readVarIntString(in);
+                    String modVersion = readVarIntString(in);
+                    mods.put(modId, modVersion);
+                }
+                applyMods(player, mods);
+                return true;
             }
 
-            int modCount = readVarInt(in);
-            Map<String, String> mods = new LinkedHashMap<>();
-
-            for (int i = 0; i < modCount; i++) {
-                String modId = readVarIntString(in);
-                String modVersion = readVarIntString(in);
-                mods.put(modId, modVersion);
+            if (discriminator == 1 || discriminator == 3) {
+                return tryParseRegistryData(player, in);
             }
 
-            applyMods(player, mods);
-            return true;
+            return false;
         } catch (Exception ignored) {
             return false;
         }
@@ -96,14 +115,15 @@ public class ModDetectionListener implements PluginMessageListener {
             }
 
             int modCount = in.readUnsignedByte();
+            if (modCount < 0 || modCount > 255) {
+                return false;
+            }
             Map<String, String> mods = new LinkedHashMap<>();
-
             for (int i = 0; i < modCount; i++) {
                 String modId = in.readUTF();
                 String modVersion = in.readUTF();
                 mods.put(modId, modVersion);
             }
-
             applyMods(player, mods);
             return true;
         } catch (Exception ignored) {
@@ -111,14 +131,111 @@ public class ModDetectionListener implements PluginMessageListener {
         }
     }
 
-    private void applyMods(Player player, Map<String, String> mods) {
-        PlayerDataManager.PlayerData data = playerDataManager.getPlayerData(player);
-        data.clearMods();
-        for (Map.Entry<String, String> entry : mods.entrySet()) {
-            data.addMod(entry.getKey(), entry.getValue());
+    private boolean tryParseExtendedHandshake(Player player, byte[] message) {
+        if (message.length < 3) {
+            return false;
         }
-        data.setModsDetected(true);
-        plugin.getLogger().info("Detected " + data.getModCount() + " mods for player " + player.getName());
+
+        try {
+            ByteArrayInputStream in = new ByteArrayInputStream(message);
+            int discriminator = readVarInt(in);
+
+            if (discriminator == 0) {
+                int remaining = in.available();
+                if (remaining < 2) return false;
+
+                int count = readVarInt(in);
+                if (count <= 0 || count > 5000) return false;
+
+                Map<String, String> mods = new LinkedHashMap<>();
+                for (int i = 0; i < count; i++) {
+                    String entry = readVarIntString(in);
+                    int sep = entry.indexOf(':');
+                    if (sep > 0 && sep < entry.length() - 1) {
+                        mods.put(entry.substring(0, sep), entry.substring(sep + 1));
+                    } else {
+                        mods.put(entry, "?");
+                    }
+                }
+                if (!mods.isEmpty()) {
+                    applyMods(player, mods);
+                    return true;
+                }
+            }
+
+            return false;
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+    private boolean tryParseRegistryData(Player player, ByteArrayInputStream in) {
+        try {
+            int count = readVarInt(in);
+            if (count <= 0 || count > 5000) return false;
+
+            Map<String, String> entries = new LinkedHashMap<>();
+            for (int i = 0; i < count; i++) {
+                String entry = readVarIntString(in);
+                entries.put(entry, "?");
+            }
+
+            if (!entries.isEmpty()) {
+                PlayerDataManager.PlayerData data = playerDataManager.getPlayerData(player);
+                for (Map.Entry<String, String> entry : entries.entrySet()) {
+                    String key = entry.getKey();
+                    int colon = key.indexOf(':');
+                    if (colon > 0) {
+                        String ns = key.substring(0, colon);
+                        if (!ns.equals("minecraft") && !ns.equals("forge") && !ns.equals("fml")) {
+                            if (!data.getMods().containsKey(ns)) {
+                                data.addMod(ns, "?");
+                                data.setModsDetected(true);
+                            }
+                        }
+                    }
+                }
+                return !entries.isEmpty();
+            }
+        } catch (Exception ignored) {}
+
+        return false;
+    }
+
+    private void handleNeoForge(Player player, byte[] message, String channel) {
+        try {
+            ByteArrayInputStream in = new ByteArrayInputStream(message);
+            int count = readVarInt(in);
+            if (count > 0 && count < 5000) {
+                Map<String, String> mods = new LinkedHashMap<>();
+                for (int i = 0; i < count; i++) {
+                    String entry = readVarIntString(in);
+                    mods.put(entry, "?");
+                }
+                if (!mods.isEmpty()) {
+                    applyMods(player, mods);
+                }
+            }
+        } catch (Exception ignored) {}
+    }
+
+    private void handleFabricChannel(Player player, byte[] message, String channel) {
+        try {
+            ByteArrayInputStream in = new ByteArrayInputStream(message);
+            if (message.length > 4) {
+                int count = readVarInt(in);
+                if (count > 0 && count < 5000) {
+                    Map<String, String> entries = new LinkedHashMap<>();
+                    for (int i = 0; i < count; i++) {
+                        String entry = readVarIntString(in);
+                        entries.put(entry, "?");
+                    }
+                    if (!entries.isEmpty()) {
+                        applyMods(player, entries);
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
     }
 
     private void handleForgeLoginWrapper(Player player, byte[] message) {
@@ -128,12 +245,137 @@ public class ModDetectionListener implements PluginMessageListener {
                 return;
             }
 
-            if (isHandshakeChannel(payload.channel)) {
-                handleForgeHandshake(player, payload.payload);
+            String lower = payload.channel.toLowerCase();
+            if (lower.equals("fml:handshake") || lower.equals("forge:handshake")) {
+                handleForgeHandshake(player, payload.payload, payload.channel);
             }
         } catch (Exception e) {
             plugin.getLogger().warning("Error handling Forge login wrapper: " + e.getMessage());
         }
+    }
+
+    private void tryGenericModListParse(Player player, byte[] message, String channel) {
+        if (message.length < 3) return;
+
+        try {
+            ByteArrayInputStream in = new ByteArrayInputStream(message);
+            int possibleCount = readVarInt(in);
+            if (possibleCount > 0 && possibleCount < 500 && in.available() > possibleCount) {
+                Map<String, String> mods = new LinkedHashMap<>();
+                for (int i = 0; i < possibleCount; i++) {
+                    String entry = readVarIntString(in);
+                    if (entry.length() > 100) return;
+                    mods.put(entry, "?");
+                }
+                if (mods.size() > 1) {
+                    applyMods(player, mods);
+                }
+            }
+        } catch (Exception ignored) {}
+    }
+
+    private void applyMods(Player player, Map<String, String> mods) {
+        if (mods.isEmpty()) return;
+
+        PlayerDataManager.PlayerData data = playerDataManager.getPlayerData(player);
+        boolean addedAny = false;
+        for (Map.Entry<String, String> entry : mods.entrySet()) {
+            List<String> modIds = extractModIds(entry.getKey());
+            if (modIds.isEmpty()) {
+                continue;
+            }
+
+            String version = normalizeVersion(entry.getValue());
+            for (String modId : modIds) {
+                if (!data.getMods().containsKey(modId)) {
+                    data.addMod(modId, version);
+                    addedAny = true;
+                }
+            }
+        }
+        if (addedAny) {
+            data.setModsDetected(true);
+        }
+    }
+
+    private List<String> extractModIds(String rawModId) {
+        List<String> result = new ArrayList<>();
+        if (rawModId == null || rawModId.isBlank()) {
+            return result;
+        }
+
+        String candidate = rawModId.trim();
+        if ((candidate.startsWith("[") && candidate.endsWith("]"))
+                || (candidate.startsWith("{") && candidate.endsWith("}"))) {
+            candidate = candidate.substring(1, candidate.length() - 1).trim();
+        }
+
+        String[] parts = candidate.split(",");
+        for (String part : parts) {
+            String cleaned = sanitizeModId(part);
+            if (cleaned != null && !result.contains(cleaned)) {
+                result.add(cleaned);
+            }
+        }
+
+        return result;
+    }
+
+    private String sanitizeModId(String token) {
+        if (token == null || token.isBlank()) {
+            return null;
+        }
+
+        String value = token.trim();
+        if ((value.startsWith("\"") && value.endsWith("\"")) || (value.startsWith("'") && value.endsWith("'"))) {
+            value = value.substring(1, value.length() - 1).trim();
+        }
+
+        int atIndex = value.indexOf('@');
+        if (atIndex > 0) {
+            value = value.substring(0, atIndex).trim();
+        }
+
+        int equalsIndex = value.indexOf('=');
+        if (equalsIndex > 0) {
+            value = value.substring(0, equalsIndex).trim();
+        }
+
+        int colonIndex = value.indexOf(':');
+        if (colonIndex > 0) {
+            value = value.substring(0, colonIndex).trim();
+        }
+
+        value = value.toLowerCase(Locale.ROOT);
+        if (value.length() < 2 || value.length() > 64) {
+            return null;
+        }
+        if (value.matches("\\d+")) {
+            return null;
+        }
+        if (!value.matches("[a-z0-9_.-]+")) {
+            return null;
+        }
+        if (value.equals("minecraft") || value.equals("forge") || value.equals("fml")) {
+            return null;
+        }
+        return value;
+    }
+
+    private String normalizeVersion(String rawVersion) {
+        if (rawVersion == null || rawVersion.isBlank()) {
+            return "?";
+        }
+
+        String version = rawVersion.trim();
+        if ((version.startsWith("[") && version.endsWith("]"))
+                || (version.startsWith("{") && version.endsWith("}"))) {
+            version = version.substring(1, version.length() - 1).trim();
+        }
+        if (version.isBlank() || version.matches("\\d+")) {
+            return "?";
+        }
+        return version;
     }
 
     private WrapperPayload unwrapLoginWrapper(byte[] message) throws IOException {
@@ -178,8 +420,8 @@ public class ModDetectionListener implements PluginMessageListener {
 
     private String readVarIntString(ByteArrayInputStream in) throws IOException {
         int length = readVarInt(in);
-        if (length < 0) {
-            throw new IOException("Invalid string length");
+        if (length < 0 || length > 32767) {
+            throw new IOException("Invalid string length: " + length);
         }
         byte[] bytes = in.readNBytes(length);
         if (bytes.length != length) {

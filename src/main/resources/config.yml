@@ -19,6 +19,17 @@ detection:
   log-to-console: true
   blocked-client-kick: true
   blocked-mod-kick: true
+  channel-detection:
+    enabled: true
+    infer-mod-ids: true
+    ignored-namespaces:
+      - "minecraft"
+      - "bungeecord"
+      - "velocity"
+    ignored-channels:
+      - "minecraft:brand"
+      - "minecraft:register"
+      - "minecraft:unregister"
   blocked-clients:
     - "xynis"
     - "liquidbounce"
@@ -26,6 +37,7 @@ detection:
     - "wurst"
   blocked-mod-ids:
     - "xynis"
+    - "liquidbounce"
     - "meteor"
     - "wurst"
   discord-webhook:

@@ -2,9 +2,7 @@ package dev.meyba.justDetector.managers;
 
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerDataManager {
     private final Map<UUID, PlayerData> playerDataMap;
@@ -27,16 +25,14 @@ public class PlayerDataManager {
         private String version;
         private String brand;
         private final Map<String, String> mods;
+        private final Set<String> pluginChannels;
         private boolean modsDetected;
 
         public PlayerData(UUID uuid) {
             this.uuid = uuid;
             this.mods = new HashMap<>();
+            this.pluginChannels = new HashSet<>();
             this.modsDetected = false;
-        }
-
-        public UUID getUuid() {
-            return uuid;
         }
 
         public String getClientType() {
@@ -71,16 +67,20 @@ public class PlayerDataManager {
             mods.put(modId, version);
         }
 
-        public void clearMods() {
-            mods.clear();
-        }
-
         public void setModsDetected(boolean modsDetected) {
             this.modsDetected = modsDetected;
         }
 
         public int getModCount() {
             return mods.size();
+        }
+
+        public boolean addPluginChannel(String channel) {
+            return pluginChannels.add(channel);
+        }
+
+        public void removePluginChannel(String channel) {
+            pluginChannels.remove(channel);
         }
     }
 }

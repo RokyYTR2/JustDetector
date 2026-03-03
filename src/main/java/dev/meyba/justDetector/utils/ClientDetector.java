@@ -8,31 +8,39 @@ public class ClientDetector {
             return "Unknown";
         }
 
-        brand = brand.toLowerCase();
+        String lower = brand.toLowerCase();
 
-        if (brand.contains("fabric")) {
-            return "Fabric";
-        } else if (brand.contains("forge") || brand.contains("fml")) {
-            return "Forge";
-        } else if (brand.contains("quilt")) {
-            return "Quilt";
-        } else if (brand.contains("neoforge")) {
-            return "NeoForge";
-        } else if (brand.contains("vanilla") || brand.equals("minecraft")) {
-            return "Vanilla";
-        } else if (brand.contains("optifine")) {
-            return "OptiFine";
-        } else if (brand.contains("lunar")) {
-            return "Lunar Client";
-        } else if (brand.contains("badlion")) {
-            return "Badlion Client";
-        } else if (brand.contains("feather")) {
-            return "Feather Client";
-        } else if (brand.contains("labymod")) {
-            return "LabyMod";
-        } else if (brand.contains("pvplounge")) {
-            return "PvPLounge";
-        }
+        if (lower.contains("meteor")) return "Meteor Client";
+        if (lower.contains("wurst")) return "Wurst Client";
+        if (lower.contains("liquidbounce")) return "LiquidBounce";
+        if (lower.contains("aristois")) return "Aristois";
+        if (lower.contains("xynis")) return "Xynis";
+        if (lower.contains("inertia")) return "Inertia Client";
+        if (lower.contains("impact")) return "Impact";
+        if (lower.contains("rusherhack")) return "RusherHack";
+        if (lower.contains("future")) return "Future Client";
+        if (lower.contains("sigma")) return "Sigma Client";
+        if (lower.contains("novoline")) return "Novoline";
+
+        if (lower.contains("neoforge")) return "NeoForge";
+        if (lower.contains("quilt")) return "Quilt";
+        if (lower.contains("fabric")) return "Fabric";
+        if (lower.contains("forge") || lower.contains("fml")) return "Forge";
+
+        if (lower.contains("lunarclient") || lower.contains("lunar")) return "Lunar Client";
+        if (lower.contains("badlion") || lower.contains("blc")) return "Badlion Client";
+        if (lower.contains("feather")) return "Feather Client";
+        if (lower.contains("labymod")) return "LabyMod";
+        if (lower.contains("pvplounge")) return "PvPLounge";
+        if (lower.contains("essential")) return "Essential";
+        if (lower.contains("cosmic")) return "Cosmic Client";
+        if (lower.contains("salwyrr")) return "Salwyrr Client";
+        if (lower.contains("cheatbreaker")) return "CheatBreaker";
+        if (lower.contains("batmod")) return "BatMod";
+
+        if (lower.contains("optifine")) return "OptiFine";
+
+        if (lower.contains("vanilla") || lower.equals("minecraft")) return "Vanilla";
 
         return "Modified (" + brand + ")";
     }
