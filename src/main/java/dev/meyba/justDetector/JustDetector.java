@@ -5,7 +5,7 @@ import dev.meyba.justDetector.listeners.ModDetectionListener;
 import dev.meyba.justDetector.listeners.PlayerDetectionListener;
 import dev.meyba.justDetector.managers.PlayerDataManager;
 import dev.meyba.justDetector.utils.ChatUtil;
-import dev.meyba.justDetector.utils.VersionChecker;
+import dev.meyba.justDetector.utils.VersionUtil;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class JustDetector extends JavaPlugin {
@@ -30,7 +30,7 @@ public final class JustDetector extends JavaPlugin {
 
         registerPluginChannels();
 
-        new VersionChecker(this, "RokyYTR2", "JustDetector").checkForUpdates();
+        new VersionUtil(this, "RokyYTR2", "JustDetector").checkForUpdates();
 
         getLogger().info("JustDetector has been enabled!");
     }
