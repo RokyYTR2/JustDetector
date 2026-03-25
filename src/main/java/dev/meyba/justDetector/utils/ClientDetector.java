@@ -21,6 +21,15 @@ public class ClientDetector {
         if (lower.contains("future")) return "Future Client";
         if (lower.contains("sigma")) return "Sigma Client";
         if (lower.contains("novoline")) return "Novoline";
+        if (lower.contains("rise")) return "Rise Client";
+        if (lower.contains("exhibition")) return "Exhibition";
+        if (lower.contains("fdpclient") || lower.contains("fdp")) return "FDP Client";
+        if (lower.contains("azura")) return "Azura Client";
+        if (lower.contains("pandaware")) return "Pandaware";
+        if (lower.contains("nhack")) return "NHack";
+        if (lower.contains("hanabi")) return "Hanabi Client";
+        if (lower.contains("raven")) return "Raven B+";
+        if (lower.contains("forgehax")) return "ForgeHax";
 
         if (lower.contains("neoforge")) return "NeoForge";
         if (lower.contains("quilt")) return "Quilt";
@@ -49,6 +58,7 @@ public class ClientDetector {
         int protocol = player.getProtocolVersion();
 
         return switch (protocol) {
+            case 775 -> "26.1";
             case 774 -> "1.21.11";
             case 773 -> "1.21.9/1.21.10";
             case 772 -> "1.21.7/1.21.8";

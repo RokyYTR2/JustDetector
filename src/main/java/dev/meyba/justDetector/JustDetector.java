@@ -37,6 +37,7 @@ public final class JustDetector extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        getServer().getMessenger().unregisterIncomingPluginChannel(this);
         getLogger().info("JustDetector has been disabled!");
     }
 
